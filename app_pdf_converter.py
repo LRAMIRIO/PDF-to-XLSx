@@ -5,6 +5,7 @@ from io import BytesIO
 import zipfile
 import re
 
+# Função para converter PDF em Excel
 def converter_pdf_para_excel(pdf_file):
     reader = PdfReader(pdf_file)
     linhas_total = []
@@ -18,11 +19,15 @@ def converter_pdf_para_excel(pdf_file):
     output.seek(0)
     return output
 
+# Interface do Streamlit
+st.set_page_config(page_title="Conversor PDF ➜ Excel", layout="centered")
 st.title("📄🔁 Conversor de PDF para Excel (.XLSX) em ZIP")
-st.markdown("Envie múltiplos arquivos PDF que deseja converter. Você receberá um único arquivo `.zip` com todas as planilhas convertidas.")
+st.markdown("Envie **múltiplos PDFs** que serão convertidos automaticamente para planilhas Excel. O resultado será compactado em um único arquivo `.zip` para facilitar o download.")
 
-uploaded_files = st.file_uploader("📤 Envie os PDFs:", type="pdf", accept_multiple_files=True)
+# Upload de arquivos
+uploaded_files = st.file_uploader("📤 Envie os arquivos PDF:", type="pdf", accept_multiple_files=True)
 
+# Processo de conversão e download
 if uploaded_files:
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, "w") as zipf:
@@ -34,9 +39,12 @@ if uploaded_files:
 
     zip_buffer.seek(0)
 
-    st.success("✅ Conversão concluída com sucesso!")
+    st.success("✅ Todos os arquivos foram convertidos com sucesso!")
+
+    # Botão para download único em .zip
     st.download_button(
-        label="📥 Baixar arquivo ZIP com todos os Excel",
+        label="📥 Baixar ZIP com todas as planilhas Excel",
         data=zip_buffer,
         file_name="planilhas_convertidas.zip",
         mime="application/zip"
+    )
